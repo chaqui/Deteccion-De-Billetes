@@ -82,14 +82,47 @@ pause(5);
 img=getsnapshot(video);
 closepreview(video);
 delete(video);
-
+I = rgb2gray(img);
+figure(2);
+threshold = graythresh(I);
+bw = im2bw(I,threshold);
+imshow(bw)
+bw = bwareaopen(bw,30);
+se = strel('disk',2);
+bw = imclose(bw,se);
+bw = imfill(bw,'holes');
+imshow(bw)
+[B,L] = bwboundaries(bw,'noholes');
+imshow(label2rgb(L, @jet, [.5 .5 .5]))
+hold on
+for k = 1:length(B)
+  boundary = B{k};
+  plot(boundary(:,2), boundary(:,1), 'w', 'LineWidth', 2)
+end
 
 % --- Executes on button press in SeleccionFoto.
 function SeleccionFoto_Callback(hObject, eventdata, handles)
-% hObject    handle to SeleccionFoto (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+clc,clear all;
+ruta=uigetfile({'*.jpg'},'Abrir Documento');
+img=imread(ruta);
+I = rgb2gray(img);
+threshold = graythresh(I);
+bw = im2bw(I,threshold);
+figure(2);
+imshow(bw)
+bw = bwareaopen(bw,30);
+se = strel('disk',2);
+bw = imclose(bw,se);
+bw = imfill(bw,'holes');
 
+imshow(bw)
+[B,L] = bwboundaries(bw,'noholes');
+imshow(label2rgb(L, @jet, [.5 .5 .5]))
+hold on
+for k = 1:length(B)
+  boundary = B{k};
+  plot(boundary(:,2), boundary(:,1), 'w', 'LineWidth', 2)
+end
 
 % --- Executes on button press in AnalizarImagen.
 function AnalizarImagen_Callback(hObject, eventdata, handles)
